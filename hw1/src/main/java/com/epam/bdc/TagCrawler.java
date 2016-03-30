@@ -69,17 +69,6 @@ public final class TagCrawler {
 
     private AtomicInteger total = new AtomicInteger(0);
 
-    private static OutputStream statusStream;
-
-    static {
-        try {
-            FileSystem fs = FileSystem.get(new Configuration());
-            statusStream = fs.create(new Path("/apps/bdc/hw1/status.txt"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public TagCrawler(String urlsSeed, String output) {
         checkArgument(urlsSeed != null && output != null);
         this.seed = new Path(urlsSeed);
@@ -91,7 +80,7 @@ public final class TagCrawler {
             .build());
         this.saveQueue = new ArrayBlockingQueue<>(100);
 
-        this.processingExecutor = Executors.newFixedThreadPool(10, new ThreadFactoryBuilder()
+        this.processingExecutor = Executors.newFixedThreadPool(2, new ThreadFactoryBuilder()
             .setNameFormat("FetchAndTagGroup-%d")
             .setDaemon(true)
             .build());
@@ -100,7 +89,6 @@ public final class TagCrawler {
 
     public void init() throws IOException {
         FileSystem fs = FileSystem.get(new Configuration());
-        statusStream = fs.create(new Path("/apps/bdc/hw1/status.txt"));
         outputStream = fs.create(output);
         inputStream = new InputStreamReader(fs.open(seed));
 
@@ -119,7 +107,7 @@ public final class TagCrawler {
             }
         });
 
-        IntStream.range(0, 20).forEach((i) ->
+        IntStream.range(0, 2).forEach((i) ->
             processingExecutor.submit(() -> {
                 final SimpleHttpFetcher fetcher = new SimpleHttpFetcher(
                     new UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) " +
@@ -225,19 +213,18 @@ public final class TagCrawler {
     }
 
     public static void main(String[] args) {
-        write("Running TagCrawler", statusStream);
+        try {
+        TimeUnit.SECONDS.sleep(30);
         checkArgument(args.length == 2);
 
         TagCrawler crawler = new TagCrawler(args[0], args[1]);
-        try {
+
             crawler.init();
             crawler.run();
         } catch (Exception e) {
-            write(Throwables.getStackTraceAsString(e), statusStream);
             System.err.println(Throwables.getStackTraceAsString(e));
         } finally {
-            write("Shutdown occurs", statusStream);
-            crawler.shutdown();
+//            crawler.shutdown();
         }
     }
 }

@@ -1,10 +1,12 @@
 #!/bin/sh
 
 hdfs dfs -mkdir -p /apps/bdc/hw1/
+
 hdfs dfs -rm /apps/bdc/hw1/hw1-app.jar
+hdfs dfs -rm /apps/bdc/hw1/seed.input.txt
+hdfs dfs -rm /apps/bdc/hw1/output.seed.txt
 
 hdfs dfs -put target/hw1-app.jar /apps/bdc/hw1/hw1-app.jar
 hdfs dfs -put target/seed.input.txt /apps/bdc/hw1/seed.input.txt
 
-hdfs dfs -rm /apps/bdc/hw1/output.seed.txt
 yarn jar target/hw1-app.jar hdfs://sandbox.hortonworks.com:8020/apps/bdc/hw1/seed.input.txt hdfs://sandbox.hortonworks.com:8020/apps/bdc/hw1/seed.output.txt hdfs://sandbox.hortonworks.com:8020/apps/bdc/hw1/hw1-app.jar
