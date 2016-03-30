@@ -20,6 +20,7 @@ import org.apache.hadoop.yarn.util.Records;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.hadoop.yarn.api.ApplicationConstants.Environment.JAVA_HOME;
@@ -36,11 +37,13 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
     private final Path seed;
     private final Path jar;
     private final String output;
+    private final String appId;
 
-    public TagCrawlerAMAsync(String seed, String output, String jar) throws IOException {
+    public TagCrawlerAMAsync(String seed, String output, String jar, String appId) throws IOException {
         this.seed = new Path(seed);
         this.jar = new Path(jar);
         this.output = output;
+        this.appId = appId;
         this.configuration = new YarnConfiguration();
         this.numContainersToWaitFor = new AtomicInteger(1);
         this.nmClient = NMClient.createNMClient();
@@ -103,6 +106,19 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
 
     public void onContainersCompleted(List<ContainerStatus> statuses) {
         for (ContainerStatus status : statuses) {
+            if (status.getExitStatus() != 0) {
+                numContainersToWaitFor.decrementAndGet();
+                try {
+                    TimeUnit.SECONDS.sleep(300);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                FileSystem.get(configuration).rename(new Path("/hadoop/yarn/log/" + appId), new Path("/hadoop/yarn/log/" + appId + "-old"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             System.out.println("[AM] Completed container " + status.getContainerId());
             numContainersToWaitFor.decrementAndGet();
         }
@@ -134,9 +150,9 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
 
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalStateException("[AM] TarCrawler AM requires urls seed parameter provided");
+            throw new IllegalStateException("[AM] TagCrawler AM requires urls seed parameter provided");
         }
-        TagCrawlerAMAsync master = new TagCrawlerAMAsync(args[0], args[1], args[2]);
+        TagCrawlerAMAsync master = new TagCrawlerAMAsync(args[0], args[1], args[2], args[3]);
         master.launch();
     }
 

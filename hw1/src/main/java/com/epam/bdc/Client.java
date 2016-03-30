@@ -46,8 +46,8 @@ public class Client {
         ContainerLaunchContext amContainer = Records.newRecord(ContainerLaunchContext.class);
         amContainer.setCommands(
             Collections.singletonList(
-                String.format("%s/bin/java -Xmx256M com.epam.bdc.TagCrawlerAMAsync %s %s %s 1>%s/stdout 2>%s/stderr",
-                    JAVA_HOME.$(), urlSeed, output, jarPath, LOG_DIR_EXPANSION_VAR, LOG_DIR_EXPANSION_VAR)
+                String.format("%s/bin/java -Xmx256M com.epam.bdc.TagCrawlerAMAsync %s %s %s %s 1>%s/stdout 2>%s/stderr",
+                    JAVA_HOME.$(), urlSeed, output, jarPath, app.getApplicationSubmissionContext().getApplicationId(), LOG_DIR_EXPANSION_VAR, LOG_DIR_EXPANSION_VAR)
             )
         );
 
