@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hadoop.version>2.7.1</hadoop.version>
         <crawler.commons.version>0.5</crawler.commons.version>
+        <guava.version>19.0</guava.version>
     </properties>
 
     <dependencies>
@@ -28,6 +29,10 @@
         <dependency>
             <groupId>com.google.code.crawler-commons</groupId>
             <artifactId>crawler-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
 
@@ -53,6 +58,11 @@
                 <groupId>com.google.code.crawler-commons</groupId>
                 <artifactId>crawler-commons</artifactId>
                 <version>${crawler.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
