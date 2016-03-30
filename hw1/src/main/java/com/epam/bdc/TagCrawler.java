@@ -213,18 +213,18 @@ public final class TagCrawler {
     }
 
     public static void main(String[] args) {
-        try {
-        TimeUnit.SECONDS.sleep(30);
-        checkArgument(args.length == 2);
-
-        TagCrawler crawler = new TagCrawler(args[0], args[1]);
-
-            crawler.init();
-            crawler.run();
-        } catch (Exception e) {
-            System.err.println(Throwables.getStackTraceAsString(e));
-        } finally {
+//        try {
+//        TimeUnit.SECONDS.sleep(30);
+//        checkArgument(args.length == 2);
+//
+//        TagCrawler crawler = new TagCrawler(args[0], args[1]);
+//
+//            crawler.init();
+//            crawler.run();
+//        } catch (Exception e) {
+//            System.err.println(Throwables.getStackTraceAsString(e));
+//        } finally {
 //            crawler.shutdown();
-        }
+//        }
     }
 }
