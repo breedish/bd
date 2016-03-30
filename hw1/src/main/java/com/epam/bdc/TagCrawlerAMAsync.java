@@ -1,5 +1,6 @@
 package com.epam.bdc;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -83,9 +84,9 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
         for (Container container : containers) {
             try {
                 ContainerLaunchContext ctx = Records.newRecord(ContainerLaunchContext.class);
-//                ctx.setLocalResources(ImmutableMap.of(
-//                    jar.getName(), EnvironmentHelper.prepareLocalResource(jar, configuration))
-//                );
+                ctx.setLocalResources(ImmutableMap.of(
+                    jar.getName(), EnvironmentHelper.prepareLocalResource(jar, configuration))
+                );
 //                ctx.setEnvironment(EnvironmentHelper.buildEnvironment(configuration));
 //                ctx.setCommands(Collections.singletonList(
 //                    String.format("%s/bin/java -Xmx512M com.epam.bdc.TagCrawler %s %s 1>%s/stdout 2>%s/stderr",
