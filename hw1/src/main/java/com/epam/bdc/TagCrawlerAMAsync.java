@@ -87,7 +87,7 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
                 ctx.setLocalResources(ImmutableMap.of(
                     jar.getName(), EnvironmentHelper.prepareLocalResource(jar, configuration))
                 );
-//                ctx.setEnvironment(EnvironmentHelper.buildEnvironment(configuration));
+                ctx.setEnvironment(EnvironmentHelper.buildEnvironment(configuration));
 //                ctx.setCommands(Collections.singletonList(
 //                    String.format("%s/bin/java -Xmx512M com.epam.bdc.TagCrawler %s %s 1>%s/stdout 2>%s/stderr",
 //                        JAVA_HOME.$(), seed.toString(), output, LOG_DIR_EXPANSION_VAR, LOG_DIR_EXPANSION_VAR)
