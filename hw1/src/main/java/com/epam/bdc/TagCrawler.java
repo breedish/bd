@@ -203,13 +203,9 @@ public final class TagCrawler {
         }
     }
 
-    static void write(String urlData, OutputStream outputStream) {
-        try {
-            InputStream is = new BufferedInputStream(new ByteArrayInputStream((urlData + "\n").getBytes(StandardCharsets.UTF_8)));
-            IOUtils.copyBytes(is, outputStream, 4096, false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    void write(String urlData, OutputStream outputStream) throws IOException {
+        InputStream is = new BufferedInputStream(new ByteArrayInputStream((urlData + "\n").getBytes(StandardCharsets.UTF_8)));
+        IOUtils.copyBytes(is, outputStream, 4096, false);
     }
 
     public static void main(String[] args) {
