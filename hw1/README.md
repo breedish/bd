@@ -29,8 +29,6 @@ ID	Keyword Value	Keyword Status	Pricing Type	Keyword Match Type	Destination URL
 282163094005	accessories,ds,nintendo,$usd,(41165),2016,across,all,apple,cancel	ON	CPC	BROAD	http://www.miniinthebox.com/nintendo-ds-accessories_c623
 ```
 
-
-
 # Possible issues
 * IP Block
-* Runs on a single container in multiple threds
+* Runs on a single container in multiple threads
