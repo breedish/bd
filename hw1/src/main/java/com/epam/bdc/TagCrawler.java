@@ -34,7 +34,7 @@ public final class TagCrawler {
     }
 
     public static void main(String[] args) {
-        checkArgument(args.length == 1);
+        checkArgument(args.length == 2);
         TagCrawler crawler = new TagCrawler(args[0], args[1]);
 
         try {
