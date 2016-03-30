@@ -92,7 +92,7 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
                 ctx.setEnvironment(EnvironmentHelper.buildEnvironment(configuration));
                 ctx.setCommands(Collections.singletonList(
 //                    String.format("%s/bin/java -Xmx256M com.epam.bdc.TagCrawler %s %s 1>%s/stdout 2>%s/stderr",
-                    String.format("%s/bin/java -Xmx256M com.epam.bdc.TagCrawler2 %s %s",
+                    String.format("%s/bin/java -Xmx256M com.epam.bdc.TagCrawler %s %s",
                         ApplicationConstants.Environment.JAVA_HOME.$(), seed.toString(), output, ApplicationConstants.LOG_DIR_EXPANSION_VAR, ApplicationConstants.LOG_DIR_EXPANSION_VAR)
                 ));
                 System.out.println("[AM] Launching container" + container.getId());

@@ -213,6 +213,8 @@ public final class TagCrawler {
     }
 
     public static void main(String[] args) {
+        System.out.println("Hello");
+        System.out.println(args);
 //        try {
 //        TimeUnit.SECONDS.sleep(30);
 //        checkArgument(args.length == 2);
