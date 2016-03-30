@@ -53,7 +53,7 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
 
         FileSystem fs = FileSystem.get(configuration);
         if (fs.exists(new Path(output))) {
-            throw new IllegalStateException("Output file already exist. Please remove it before running app");
+            throw new IllegalStateException("[AM] Output file already exist. Please remove it before running app");
         }
     }
 
@@ -117,7 +117,7 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
     }
 
     public void onError(Throwable t) {
-        System.err.println(String.format("Issue during init of AM %s", t));
+        System.err.println(String.format("[AM] Issue during init of AM %s", t));
     }
 
     public float getProgress() {
@@ -134,7 +134,7 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
 
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalStateException("TarCrawler AM requires urls seed parameter provided");
+            throw new IllegalStateException("[AM] TarCrawler AM requires urls seed parameter provided");
         }
         TagCrawlerAMAsync master = new TagCrawlerAMAsync(args[0], args[1], args[2]);
         master.launch();

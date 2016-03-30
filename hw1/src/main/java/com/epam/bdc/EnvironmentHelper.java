@@ -28,7 +28,6 @@ public final class EnvironmentHelper {
 
     private EnvironmentHelper() {}
 
-
     public static LocalResource prepareLocalResource(Path resource, Configuration configuration) throws IOException {
         LocalResource localResource = Records.newRecord(LocalResource.class);
         FileStatus jarStat = FileSystem.get(configuration).getFileStatus(resource);
