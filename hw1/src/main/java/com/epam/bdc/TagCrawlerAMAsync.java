@@ -2,6 +2,7 @@ package com.epam.bdc;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerLaunchContext;
@@ -16,6 +17,7 @@ import org.apache.hadoop.yarn.client.api.async.AMRMClientAsync;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.util.Records;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +37,7 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
     private final Path jar;
     private final String output;
 
-    public TagCrawlerAMAsync(String seed, String output, String jar) {
+    public TagCrawlerAMAsync(String seed, String output, String jar) throws IOException {
         this.seed = new Path(seed);
         this.jar = new Path(jar);
         this.output = output;
@@ -45,9 +47,14 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
         init();
     }
 
-    private void init() {
+    private void init() throws IOException {
         nmClient.init(configuration);
         nmClient.start();
+
+        FileSystem fs = FileSystem.get(configuration);
+        if (fs.exists(new Path(output))) {
+            throw new IllegalStateException("Output file already exist. Please remove it before running app");
+        }
     }
 
     public void launch() throws Exception {
@@ -102,7 +109,7 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
     }
 
     public void onNodesUpdated(List<NodeReport> updated) {
-        System.out.println("[AM] Nodes updated " +  updated);
+        System.out.println("[AM] Nodes updated " + updated);
     }
 
     public void onShutdownRequest() {

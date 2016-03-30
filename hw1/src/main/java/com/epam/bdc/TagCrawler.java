@@ -1,8 +1,17 @@
 package com.epam.bdc;
 
+import com.google.common.base.Throwables;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -27,11 +36,21 @@ public final class TagCrawler {
     public static void main(String[] args) {
         checkArgument(args.length == 1);
         TagCrawler crawler = new TagCrawler(args[0], args[1]);
-        crawler.run();
+
+        try {
+            crawler.run();
+        } catch (Exception e) {
+            System.err.println(Throwables.getStackTraceAsString(e));
+        }
     }
 
-    public void run() {
+    public void run() throws Exception {
         System.out.println("Running Crawler for " + seed + " urls seed and output " +  output);
         System.out.println(configuration);
+
+        FileSystem fs = FileSystem.get(configuration);
+        OutputStream os = fs.create(output);
+        InputStream is = new BufferedInputStream(new ByteArrayInputStream("Sample Run".getBytes(StandardCharsets.UTF_8)));
+        IOUtils.copyBytes(is, os, configuration);
     }
 }
