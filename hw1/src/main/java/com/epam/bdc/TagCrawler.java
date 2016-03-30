@@ -69,6 +69,17 @@ public final class TagCrawler {
 
     private AtomicInteger total = new AtomicInteger(0);
 
+    private static OutputStream statusStream;
+
+    static {
+        try {
+            FileSystem fs = FileSystem.get(new Configuration());
+            statusStream = fs.create(new Path("/apps/bdc/hw1/status.txt"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public TagCrawler(String urlsSeed, String output) {
         checkArgument(urlsSeed != null && output != null);
         this.seed = new Path(urlsSeed);
@@ -89,6 +100,7 @@ public final class TagCrawler {
 
     public void init() throws IOException {
         FileSystem fs = FileSystem.get(new Configuration());
+        statusStream = fs.create(new Path("/apps/bdc/hw1/status.txt"));
         outputStream = fs.create(output);
         inputStream = new InputStreamReader(fs.open(seed));
 
@@ -203,12 +215,17 @@ public final class TagCrawler {
         }
     }
 
-    protected void write(String urlData, OutputStream outputStream) throws Exception {
-        InputStream is = new BufferedInputStream(new ByteArrayInputStream((urlData + "\n").getBytes(StandardCharsets.UTF_8)));
-        IOUtils.copyBytes(is, outputStream, 4096, false);
+    static void write(String urlData, OutputStream outputStream) {
+        try {
+            InputStream is = new BufferedInputStream(new ByteArrayInputStream((urlData + "\n").getBytes(StandardCharsets.UTF_8)));
+            IOUtils.copyBytes(is, outputStream, 4096, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
+        write("Running TagCrawler", statusStream);
         checkArgument(args.length == 2);
 
         TagCrawler crawler = new TagCrawler(args[0], args[1]);
@@ -216,8 +233,10 @@ public final class TagCrawler {
             crawler.init();
             crawler.run();
         } catch (Exception e) {
+            write(Throwables.getStackTraceAsString(e), statusStream);
             System.err.println(Throwables.getStackTraceAsString(e));
         } finally {
+            write("Shutdown occurs", statusStream);
             crawler.shutdown();
         }
     }
