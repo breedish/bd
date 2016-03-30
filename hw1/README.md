@@ -32,3 +32,4 @@ ID	Keyword Value	Keyword Status	Pricing Type	Keyword Match Type	Destination URL
 # Possible issues
 * IP Block
 * Runs on a single container in multiple threads
+* All dependencies are distributed with an uber jar
