@@ -1,6 +1,5 @@
 package com.epam.bdc;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -18,13 +17,9 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.util.Records;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.apache.hadoop.yarn.api.ApplicationConstants.Environment.JAVA_HOME;
-import static org.apache.hadoop.yarn.api.ApplicationConstants.LOG_DIR_EXPANSION_VAR;
 
 /**
  * @author zenind
@@ -88,14 +83,14 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
         for (Container container : containers) {
             try {
                 ContainerLaunchContext ctx = Records.newRecord(ContainerLaunchContext.class);
-                ctx.setLocalResources(ImmutableMap.of(
-                    jar.getName(), EnvironmentHelper.prepareLocalResource(jar, configuration))
-                );
-                ctx.setEnvironment(EnvironmentHelper.buildEnvironment(configuration));
-                ctx.setCommands(Collections.singletonList(
-                    String.format("%s/bin/java -Xmx512M com.epam.bdc.TagCrawler %s %s 1>%s/stdout 2>%s/stderr",
-                        JAVA_HOME.$(), seed.toString(), output, LOG_DIR_EXPANSION_VAR, LOG_DIR_EXPANSION_VAR)
-                ));
+//                ctx.setLocalResources(ImmutableMap.of(
+//                    jar.getName(), EnvironmentHelper.prepareLocalResource(jar, configuration))
+//                );
+//                ctx.setEnvironment(EnvironmentHelper.buildEnvironment(configuration));
+//                ctx.setCommands(Collections.singletonList(
+//                    String.format("%s/bin/java -Xmx512M com.epam.bdc.TagCrawler %s %s 1>%s/stdout 2>%s/stderr",
+//                        JAVA_HOME.$(), seed.toString(), output, LOG_DIR_EXPANSION_VAR, LOG_DIR_EXPANSION_VAR)
+//                ));
                 System.out.println("[AM] Launching container" + container.getId());
                 nmClient.startContainer(container, ctx);
             } catch (Exception ex) {
