@@ -21,7 +21,6 @@ import org.apache.hadoop.yarn.util.Records;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -91,9 +90,8 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
                 );
                 ctx.setEnvironment(EnvironmentHelper.buildEnvironment(configuration));
                 ctx.setCommands(Collections.singletonList(
-//                    String.format("%s/bin/java -Xmx256M com.epam.bdc.TagCrawler %s %s 1>%s/stdout 2>%s/stderr",
-                    String.format("%s/bin/java -Xmx256M com.epam.bdc.TagCrawler %s %s",
-                        ApplicationConstants.Environment.JAVA_HOME.$(), seed.toString(), output, ApplicationConstants.LOG_DIR_EXPANSION_VAR, ApplicationConstants.LOG_DIR_EXPANSION_VAR)
+                    String.format("%s/bin/java -Xmx512M com.epam.bdc.TagCrawler %s %s",
+                        ApplicationConstants.Environment.JAVA_HOME.$(), seed.toString(), output)
                 ));
                 System.out.println("[AM] Launching container" + container.getId());
                 nmClient.startContainer(container, ctx);
@@ -105,19 +103,6 @@ public class TagCrawlerAMAsync implements AMRMClientAsync.CallbackHandler {
 
     public void onContainersCompleted(List<ContainerStatus> statuses) {
         for (ContainerStatus status : statuses) {
-            if (status.getExitStatus() != 0) {
-                numContainersToWaitFor.decrementAndGet();
-                try {
-                    TimeUnit.SECONDS.sleep(300);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                FileSystem.get(configuration).rename(new Path("/hadoop/yarn/log/" + appId), new Path("/hadoop/yarn/log/" + appId + "-old"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             System.out.println("[AM] Completed container " + status.getContainerId());
             numContainersToWaitFor.decrementAndGet();
         }
