@@ -3,7 +3,6 @@ package com.epam.bdc.bid;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.compress.SnappyCodec;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
@@ -28,7 +27,7 @@ public class IpBidStatsApp extends Configured implements Tool {
         job.setJarByClass(getClass());
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
-        SequenceFileOutputFormat.setOutputCompressorClass(job, SnappyCodec.class);
+//        SequenceFileOutputFormat.setOutputCompressorClass(job, SnappyCodec.class);
         SequenceFileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         job.setInputFormatClass(TextInputFormat.class);
