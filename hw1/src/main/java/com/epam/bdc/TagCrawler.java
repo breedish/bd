@@ -80,7 +80,7 @@ public final class TagCrawler {
             .build());
         this.saveQueue = new ArrayBlockingQueue<>(100);
 
-        this.processingExecutor = Executors.newFixedThreadPool(2, new ThreadFactoryBuilder()
+        this.processingExecutor = Executors.newFixedThreadPool(10, new ThreadFactoryBuilder()
             .setNameFormat("FetchAndTagGroup-%d")
             .setDaemon(true)
             .build());
@@ -107,7 +107,7 @@ public final class TagCrawler {
             }
         });
 
-        IntStream.range(0, 2).forEach((i) ->
+        IntStream.range(0, 10).forEach((i) ->
             processingExecutor.submit(() -> {
                 final SimpleHttpFetcher fetcher = new SimpleHttpFetcher(
                     new UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) " +
