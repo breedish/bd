@@ -3,6 +3,7 @@ package com.epam.bdc.tag;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -36,7 +37,7 @@ public final class CountTagMapper extends Mapper<LongWritable, Text, Text, IntWr
                     logEntries.forEach(e -> {
                         String[] values = e.split("\t");
                         if (values.length > 0) {
-                            tags.put(values[0], Splitter.on(",").splitToList(values[1]));
+                            tags.put(values[0], Lists.newArrayList(Splitter.on(",").split(values[1])));
                         }
                     });
                 }
