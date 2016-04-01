@@ -1,7 +1,6 @@
 #!/bin/sh
 
 hdfs dfs -rm -r  /apps/bdc/hw3/output/
-hdfs dfs -mkdir -p /apps/bdc/hw3/output/
 
 DATASET=hdfs://sandbox.hortonworks.com:8020/apps/bdc/hw3/dataset
 OUTPUT_DIR=hdfs://sandbox.hortonworks.com:8020/apps/bdc/hw3/output/
