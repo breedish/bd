@@ -15,7 +15,7 @@ public class CountTagReducer extends Reducer<Text, IntWritable, Text, IntWritabl
     @Override
     public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
         final AtomicInteger count = new AtomicInteger(0);
-        values.forEach(o -> count.incrementAndGet());
+        values.forEach(o -> count.addAndGet(o.get()));
         context.write(key, new IntWritable(count.get()));
     }
 
