@@ -3,6 +3,7 @@ package com.epam.bdc;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -38,6 +39,8 @@ public class IPinYouJob extends Configured implements Tool {
         job.setGroupingComparatorClass(IPinYouGroupComparator.class);
 
         final int result = job.waitForCompletion(true) ? 0 : 1;
+        Counters counters = job.getCounters();
+        System.out.println(counters);
 
         return result;
     }
