@@ -8,6 +8,10 @@ import org.apache.hadoop.io.WritableComparator;
  */
 public class IPinYouGroupComparator extends WritableComparator {
 
+    public IPinYouGroupComparator() {
+        super(IPinYouWritable.class, true);
+    }
+
     @Override
     public int compare(WritableComparable a, WritableComparable b) {
         IPinYouWritable i1 = (IPinYouWritable) a;
