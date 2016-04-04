@@ -3,6 +3,7 @@ package com.epam.bdc;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -40,7 +41,17 @@ public class IPinYouJob extends Configured implements Tool {
 
         final int result = job.waitForCompletion(true) ? 0 : 1;
         Counters counters = job.getCounters();
-        System.out.println(counters);
+
+        String maxImpressionIPinYouId = null;
+        long maxCount = 0;
+        for (Counter counter : counters.getGroup(StreamType.SITE_IMPRESSION.name())) {
+            if (counter.getValue() > maxCount) {
+                maxCount = counter.getValue();
+                maxImpressionIPinYouId = counter.getName();
+            }
+        }
+
+        System.out.println("Max IPinYou site impression id = " + maxImpressionIPinYouId);
 
         return result;
     }

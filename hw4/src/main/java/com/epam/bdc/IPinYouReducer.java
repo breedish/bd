@@ -5,30 +5,22 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * @author zenind
  */
 public class IPinYouReducer extends Reducer<IPinYouWritable, Text, NullWritable, Text> {
 
-    private enum StreamType {
-        SITE_IMPRESSION("1"),
-        SITE_CLICK("11");
+    private final UUID rId = UUID.randomUUID();
 
-        private final String type;
+    private int maxSiteImpressionCount = 0;
 
-        StreamType(String type) {
-            this.type = type;
-        }
-
-        public String getType() {
-            return type;
-        }
-    }
+    private IPinYouWritable maxSiteImpressionIPinYouId;
 
     @Override
     protected void reduce(IPinYouWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-        long count = 0;
+        int count = 0;
         for (Text value : values) {
             final String[] itemValues = value.toString().split("\t");
             if (StreamType.SITE_IMPRESSION.getType().equalsIgnoreCase(itemValues[21])) {
@@ -37,7 +29,17 @@ public class IPinYouReducer extends Reducer<IPinYouWritable, Text, NullWritable,
             context.write(NullWritable.get(), value);
         }
 
-        context.getCounter(StreamType.SITE_IMPRESSION.name(), key.getId().toString()).setValue(count);
+        if (count > maxSiteImpressionCount) {
+            maxSiteImpressionCount = count;
+            maxSiteImpressionIPinYouId = key;
+        }
     }
 
+    @Override
+    protected void cleanup(Context context) throws IOException, InterruptedException {
+        if (maxSiteImpressionIPinYouId != null) {
+            context.getCounter(StreamType.SITE_IMPRESSION.name(), maxSiteImpressionIPinYouId.getId().toString())
+                .setValue(maxSiteImpressionCount);
+        }
+    }
 }

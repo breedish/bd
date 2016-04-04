@@ -16,10 +16,14 @@ public class IPinYouMapper extends Mapper<LongWritable, Text, IPinYouWritable, T
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         String[] values = value.toString().split("\t");
-        if (values.length == 22) {
+        if (isValidEntry(values)) {
             iPinYouWritable.setId(new Text(values[2]));
             iPinYouWritable.setTimestamp(new Text(values[1]));
             context.write(iPinYouWritable, value);
         }
+    }
+
+    private boolean isValidEntry(String[] entry) {
+        return entry.length == 22 && entry[2] != null && !"null".equalsIgnoreCase(entry[2]);
     }
 }
